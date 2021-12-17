@@ -1,6 +1,6 @@
 import json
 import random
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # import seaborn as sns
 
 
@@ -246,6 +246,7 @@ def run(counter):
         value_price_of_wood.append(round(price_of_wood,dv))
         value_index.append(round(index,dv))
 
+
     data_dic = {"value_time": value_time, "value_price_of_wood": value_price_of_wood, "value_index": value_index}
     # create_multiplot(value_time, value_price_of_wood, value_index, "price of wood", "index")
     return data_dic
@@ -253,7 +254,7 @@ def run(counter):
 
 if __name__ == "__main__":
 
-    data_dic = run(100)
+    data_dic = run(3)
 
     with open("data.csv", "w") as f:
             f.write(json.dumps(data_dic))
