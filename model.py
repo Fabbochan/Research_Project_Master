@@ -1,7 +1,6 @@
 import json
 import random
 import matplotlib.pyplot as plt
-import filewriter
 
 
 # TODO: make it so variables can be loaded in from an input data file
@@ -9,7 +8,7 @@ import filewriter
 growth_rate = 1  # dmnl
 growth_rate_2 = 1  # dmnl
 
-initial_megatrend = 10  # dmnl
+initial_megatrend = 50  # dmnl
 # the higher the megatrend, the higher environmental policies, the cheaper the price of wood
 
 initial_amount_of_wood = 16790000  # tons
@@ -112,7 +111,7 @@ def calculate_demand_for_furniture(megatrends):
     else:
         demand_for_furniture = 1 - (megatrends / 1000)
 
-    print(demand_for_furniture)
+    # print(demand_for_furniture)
     return demand_for_furniture
 
 
@@ -166,8 +165,21 @@ def calculate_index(used_wood_for_furniture, used_steel_for_furniture, used_alum
     return sum_used_wood / (sum_used_wood + sum_non_wood)
 
 
-def calculate_emission1():
-    pass
+def calculate_global_warming_potential(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture):
+    steel =  1.836568936 # per tonne
+    plastic = 3.451825009 # per tonne
+
+    # keine richtig geile quelle für glas: http://www.greenrationbook.org.uk/resources/footprints-glass/
+    glass = 4 # per tonne
+
+    wood = 0.28363 # per tonne
+
+    # quelle für aluminium:
+    aluminium = 8.14
+
+    gwp = used_wood_for_furniture * wood + used_steel_for_furniture * steel + used_aluminium_for_furniture * aluminium + used_plastics_for_furniture * plastic + used_glass_for_furniture * glass
+
+    return gwp
 
 
 def calculate_emission2():
@@ -224,6 +236,7 @@ def run(counter):
     value_used_wood_for_furniture = []
     value_used_steel_for_furniture, value_used_aluminium_for_furniture, value_used_glass_for_furniture, value_used_plastics_for_furniture = [], [], [], []
     value_index = []
+    value_gwp = []
 
 
     for year in range(counter):
@@ -259,6 +272,10 @@ def run(counter):
 
         megatrends = calculate_megatrend(index, megatrends)
         # print(f"\nmegatrends: {megatrends}")
+
+        gwp = calculate_global_warming_potential(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture)
+        gwp = round(gwp, dv)
+        print(f"\nKg C02 eq: {gwp}")
         print("______________________")
 
         value_time.append(round(year,dv))
@@ -269,6 +286,7 @@ def run(counter):
         value_price_of_aluminium.append(round(price_of_aluminium,dv))
         value_price_of_glass.append(round(price_of_glass,dv))
         value_price_of_plastics.append(round(price_of_plastics,dv))
+        value_gwp.append(gwp)
 
 
 
@@ -280,9 +298,10 @@ def run(counter):
                 "value_price_of_glass": value_price_of_glass,
                 "value_price_of_plastics": value_price_of_plastics}
 
-    create_multiplot(value_time, value_price_of_wood, value_price_of_steel, "price of wood", "price of steel")
-    create_multiplot(value_time, value_megatrends, value_index, "value_megatrends", "value_index")
-    create_multiplot(value_time, value_price_of_aluminium, value_price_of_plastics, "alu", "plastics")
+    # create_multiplot(value_time, value_price_of_wood, value_price_of_steel, "price of wood", "price of steel")
+    # create_multiplot(value_time, value_megatrends, value_index, "value_megatrends", "value_index")
+    # create_multiplot(value_time, value_price_of_aluminium, value_price_of_plastics, "alu", "plastics")
+    create_plot(value_time, value_gwp, "", "", "Global Warming Potential")
 
     return data_dic
 
