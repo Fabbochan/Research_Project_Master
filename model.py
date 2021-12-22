@@ -1,12 +1,14 @@
 import json
 import random
+
+import matplotlib.pyplot
 import matplotlib.pyplot as plt
 
 
 # TODO: make it so variables can be loaded in from an input data file
 # Global Initial Variables
-growth_rate = 1  # dmnl
-growth_rate_2 = 1  # dmnl
+growth_rate = 1 # dmnl - for supply of wood market
+growth_rate_2 = 1  # dmnl - for supply of non wodden materials market
 
 initial_megatrend = 50  # dmnl
 # the higher the megatrend, the higher environmental policies, the cheaper the price of wood
@@ -95,7 +97,7 @@ def calculate_price_of_non_wood_m(initial_price_of_wood, price_of_wood, initial_
     price_of_aluminium = (initial_price_aluminium) / (current_supply_of_aluminium / initial_supply_of_aluminium) / ratio_wood
     price_of_glass = (initial_price_glass) / (current_supply_of_glass / initial_supply_of_glass) / ratio_wood
     price_of_plastics = (initial_price_plastics) / (current_supply_of_plastics / initial_supply_of_plastics) / ratio_wood
-    
+
     ratio_steel = initial_price_steel/price_of_steel
     if ratio_steel >= 1:
         ratio_steel -= random.uniform(0, 0.05)
@@ -190,26 +192,85 @@ def calculate_emission3():
     pass
 
 
-def create_plot(x_value, y_value, x_label, y_label, title):
-    x = x_value
-    y = y_value
-    plt.plot(x, y)
-    plt.xlabel(x_label)
-    plt.ylabel(y_label)
-    plt.title(title)
+def create_price_subplots(data_dic):
+
+    fig, ax = plt.subplots(8)
+    fig.suptitle('Overview Prices')
+    fig.tight_layout()
+    # plt.grid(color='b', linestyle='-', linewidth=0.1)
+    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
+    ax[0].set_title("megatrends")
+    ax[1].plot(data_dic["value_time"], data_dic["value_index"])
+    ax[1].set_title("index")
+    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"])
+    ax[2].set_title("pro_environmental_policies")
+    ax[3].plot(data_dic["value_time"], data_dic["value_price_of_wood"])
+    ax[3].set_title("value_price_of_wood (€)")
+    ax[4].plot(data_dic["value_time"], data_dic["value_price_of_steel"])
+    ax[4].set_title("value_price_of_steel (€)")
+    ax[5].plot(data_dic["value_time"], data_dic["value_price_of_aluminium"])
+    ax[5].set_title("value_price_of_aluminium (€)")
+    ax[6].plot(data_dic["value_time"], data_dic["value_price_of_glass"])
+    ax[6].set_title("value_price_of_glass (€)")
+    ax[7].plot(data_dic["value_time"], data_dic["value_price_of_plastics"])
+    ax[7].set_title("value_price_of_plastics (€)")
+    for i in range(8):
+        ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
     plt.show()
 
 
-def create_multiplot(x_value, y_value, z_value, title1, title2):
-    x = x_value
-    y = y_value
-    z = z_value
+def create_material_supply_subplot(data_dic):
+    fig, ax = plt.subplots(8)
+    fig.suptitle('Current Material Supplies')
+    fig.tight_layout()
+    # plt.grid(color='b', linestyle='-', linewidth=0.1)
+    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
+    ax[0].set_title("megatrends")
+    ax[1].plot(data_dic["value_time"], data_dic["value_index"])
+    ax[1].set_title("index")
+    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"])
+    ax[2].set_title("pro_environmental_policies")
+    ax[3].plot(data_dic["value_time"], data_dic["value_current_supply_of_wood"])
+    ax[3].set_title("value_current_supply_of_wood (tons)")
+    ax[4].plot(data_dic["value_time"], data_dic["value_current_supply_of_steel"])
+    ax[4].set_title("value_current_supply_of_steel (tons)")
+    ax[5].plot(data_dic["value_time"], data_dic["value_current_supply_of_aluminium"])
+    ax[5].set_title("value_current_supply_of_aluminium (tons)")
+    ax[6].plot(data_dic["value_time"], data_dic["value_current_supply_of_glass"])
+    ax[6].set_title("value_current_supply_of_glass (tons)")
+    ax[7].plot(data_dic["value_time"], data_dic["value_current_supply_of_plastics"])
+    ax[7].set_title("value_current_supply_of_plastics (tons)")
+    for i in range(8):
+        ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
+    plt.show()
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(x, y)
-    ax[0].set_title(title1)
-    ax[1].plot(x, z)
-    ax[1].set_title(title2)
+
+def create_used_materials_and_emissions_subplots(data_dic):
+
+    fig, ax = plt.subplots(9)
+    fig.suptitle('Used Materials + Emissions')
+    fig.tight_layout()
+    # plt.grid(color='b', linestyle='-', linewidth=0.1)
+    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
+    ax[0].set_title("megatrends")
+    ax[1].plot(data_dic["value_time"], data_dic["value_index"])
+    ax[1].set_title("index")
+    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"])
+    ax[2].set_title("pro_environmental_policies")
+    ax[3].plot(data_dic["value_time"], data_dic["value_used_wood_for_furniture"])
+    ax[3].set_title("value_used_wood_for_furniture (tons)")
+    ax[4].plot(data_dic["value_time"], data_dic["value_used_steel_for_furniture"])
+    ax[4].set_title("value_used_steel_for_furniture (tons)")
+    ax[5].plot(data_dic["value_time"], data_dic["value_used_aluminium_for_furniture"])
+    ax[5].set_title("value_used_aluminium_for_furniture (tons)")
+    ax[6].plot(data_dic["value_time"], data_dic["value_used_glass_for_furniture"])
+    ax[6].set_title("value_used_glass_for_furniture (tons)")
+    ax[7].plot(data_dic["value_time"], data_dic["value_used_plastics_for_furniture"])
+    ax[7].set_title("value_used_plastics_for_furniture (tons)")
+    ax[8].plot(data_dic["value_time"], data_dic["value_gwp"])
+    ax[8].set_title("KG CO2 eq. emitted per year")
+    for i in range(9):
+        ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
     plt.show()
 
 
@@ -241,7 +302,7 @@ def run(counter):
 
     for year in range(counter):
         print("______________________")
-        print("Run (years): " + str(year + 1))
+        print("Year (run): " + str(year + 1))
 
         pro_environmental_policies = calculate_pro_environmental_policies(megatrends)
         # print(f"\nPro_environmental_policies: {pro_environmental_policies} dmnl\n")
@@ -275,41 +336,71 @@ def run(counter):
 
         gwp = calculate_global_warming_potential(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture)
         gwp = round(gwp, dv)
-        print(f"\nKg C02 eq: {gwp}")
+        # print(f"\nKg C02 eq: {gwp}")
         print("______________________")
 
-        value_time.append(round(year,dv))
+        value_time.append(year + 1)
         value_price_of_wood.append(round(price_of_wood,dv))
         value_index.append(round(index,dv))
+        value_pro_environmental_policies.append(round(pro_environmental_policies, dv))
         value_megatrends.append(round(megatrends,dv))
         value_price_of_steel.append(round(price_of_steel,dv))
         value_price_of_aluminium.append(round(price_of_aluminium,dv))
         value_price_of_glass.append(round(price_of_glass,dv))
         value_price_of_plastics.append(round(price_of_plastics,dv))
+        value_current_supply_of_wood.append(round(current_supply_of_wood, dv))
+        value_current_supply_of_steel.append(round(current_supply_of_steel, dv))
+        value_current_supply_of_aluminium.append(round(current_supply_of_aluminium, dv))
+        value_current_supply_of_glass.append(round(current_supply_of_glass, dv))
+        value_current_supply_of_plastics.append(round(current_supply_of_plastics, dv))
+        value_used_wood_for_furniture.append(round(used_wood_for_furniture,dv))
+        value_used_steel_for_furniture.append(round(used_steel_for_furniture, dv))
+        value_used_aluminium_for_furniture.append(round(used_aluminium_for_furniture, dv))
+        value_used_glass_for_furniture.append(round(used_glass_for_furniture, dv))
+        value_used_plastics_for_furniture.append(round(used_plastics_for_furniture, dv))
         value_gwp.append(gwp)
 
 
 
     data_dic = {"value_time": value_time,
-                "value_price_of_wood": value_price_of_wood,
                 "value_index": value_index,
+                "value_pro_environmental_policies": value_pro_environmental_policies,
+                "value_megatrends": value_megatrends,
+                "value_price_of_wood": value_price_of_wood,
                 "value_price_of_steel": value_price_of_steel,
                 "value_price_of_aluminium": value_price_of_aluminium,
                 "value_price_of_glass": value_price_of_glass,
-                "value_price_of_plastics": value_price_of_plastics}
+                "value_price_of_plastics": value_price_of_plastics,
+                "value_current_supply_of_wood": value_current_supply_of_wood,
+                "value_current_supply_of_steel": value_current_supply_of_steel,
+                "value_current_supply_of_aluminium": value_current_supply_of_aluminium,
+                "value_current_supply_of_glass": value_current_supply_of_glass,
+                "value_current_supply_of_plastics": value_current_supply_of_plastics,
+                "value_used_wood_for_furniture": value_used_wood_for_furniture,
+                "value_used_steel_for_furniture": value_used_steel_for_furniture,
+                "value_used_aluminium_for_furniture": value_used_aluminium_for_furniture,
+                "value_used_glass_for_furniture": value_used_glass_for_furniture,
+                "value_used_plastics_for_furniture": value_used_plastics_for_furniture,
+                "value_gwp": value_gwp
+                }
 
-    # create_multiplot(value_time, value_price_of_wood, value_price_of_steel, "price of wood", "price of steel")
-    # create_multiplot(value_time, value_megatrends, value_index, "value_megatrends", "value_index")
-    # create_multiplot(value_time, value_price_of_aluminium, value_price_of_plastics, "alu", "plastics")
-    create_plot(value_time, value_gwp, "", "", "Global Warming Potential")
 
     return data_dic
 
 
 if __name__ == "__main__":
 
-    data_dic = run(10)
-    print(data_dic)
+    data_dic = run(20)
+
+    create_price_subplots(data_dic)
+    create_material_supply_subplot(data_dic)
+    create_used_materials_and_emissions_subplots(data_dic)
+
+    for key, value in data_dic.items():
+        print('%s,%s\n' % (key, value))
+
+
+
 
 
     # with open("data.csv", "w") as f:
