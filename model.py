@@ -129,18 +129,9 @@ def calculate_amount_of_wood_supply(pro_environmental_policies, current_stock_wo
     return current_stock_wood_supply
 
 
-def calculate_consumption_of_wood_f(ratio_c):
-    # ratio_c = number between 0 and 1 | 1 = 100 % intense wood consumption
-
-    consumption_more_intense = ratio_c
-    consumption_less_intense = 1 - ratio_c
-    pass
-
-
 def calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood):
 
     # TODO price non wooden materials
-    # formula for: inflow
     used_wood_for_furniture = industry_wood_demand / (price_of_wood / initial_price_of_wood) * ratio_for_wood_furniture_demand
     return used_wood_for_furniture
 
@@ -214,7 +205,7 @@ def create_price_subplots(data_dic):
     ax[7].set_title("value_price_of_plastics (€)")
     for i in range(8):
         ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
-    plt.savefig("static/Overview_Prices")
+    plt.savefig("static/overview_prices")
     plt.close()
     plt.show()
 
