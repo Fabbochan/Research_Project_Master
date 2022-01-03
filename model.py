@@ -1,7 +1,5 @@
-import json
+# import json
 import random
-
-import matplotlib.pyplot
 import matplotlib.pyplot as plt
 
 
@@ -194,7 +192,7 @@ def calculate_emission3():
 
 def create_price_subplots(data_dic):
 
-    fig, ax = plt.subplots(8)
+    fig, ax = plt.subplots(8, figsize=(15,15))
     fig.suptitle('Overview Prices')
     fig.tight_layout()
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
@@ -216,11 +214,13 @@ def create_price_subplots(data_dic):
     ax[7].set_title("value_price_of_plastics (€)")
     for i in range(8):
         ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
+    plt.savefig("static/Overview_Prices")
+    plt.close()
     plt.show()
 
 
 def create_material_supply_subplot(data_dic):
-    fig, ax = plt.subplots(8)
+    fig, ax = plt.subplots(8, figsize=(15,15))
     fig.suptitle('Current Material Supplies')
     fig.tight_layout()
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
@@ -242,12 +242,14 @@ def create_material_supply_subplot(data_dic):
     ax[7].set_title("value_current_supply_of_plastics (tons)")
     for i in range(8):
         ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
+    plt.savefig("static/current_material_supplies")
+    plt.close()
     plt.show()
 
 
 def create_used_materials_and_emissions_subplots(data_dic):
 
-    fig, ax = plt.subplots(9)
+    fig, ax = plt.subplots(9, figsize=(15,15))
     fig.suptitle('Used Materials + Emissions')
     fig.tight_layout()
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
@@ -271,6 +273,8 @@ def create_used_materials_and_emissions_subplots(data_dic):
     ax[8].set_title("KG CO2 eq. emitted per year")
     for i in range(9):
         ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
+    plt.savefig("static/used_materials_and_emissions")
+    plt.close()
     plt.show()
 
 
@@ -395,13 +399,9 @@ if __name__ == "__main__":
     create_price_subplots(data_dic)
     create_material_supply_subplot(data_dic)
     create_used_materials_and_emissions_subplots(data_dic)
-
-    for key, value in data_dic.items():
-        print('%s,%s\n' % (key, value))
-
-
-
-
+    print("\nPlots created and saved.")
+    # for key, value in data_dic.items():
+    #     print('%s,%s\n' % (key, value))
 
     # with open("data.csv", "w") as f:
     #         f.write(json.dumps(data_dic))
