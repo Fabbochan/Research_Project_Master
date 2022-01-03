@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 # TODO: make it so variables can be loaded in from an input data file
 # Global Initial Variables
-growth_rate = 1.03 # dmnl - for supply of wood market
-growth_rate_2 = 1.02  # dmnl - for supply of non wodden materials market
+growth_rate = 1 # dmnl - for supply of wood market
+growth_rate_2 = 1  # dmnl - for supply of non wodden materials market
 
 initial_megatrend = 50  # dmnl
 # the higher the megatrend, the higher environmental policies, the cheaper the price of wood
@@ -40,8 +40,15 @@ initial_price_aluminium = 2529.51  # euro
 initial_price_glass = 1975  # euro
 initial_price_plastics = 938.67  # euro
 
-# variable
+# variable to fluctuate the demand for wood materials
+# default = False
+# TODO: Look how much the market changed and fluctuated over time in the real market
 material_trends = True
+
+# variable to fluctuate the current policies in the austrian government
+# if policies should not only steadly rise - displays the changing interest within politic interest
+# default = False
+policy_fluctuation = True
 
 # Initial seed
 # seed = 10
@@ -49,13 +56,36 @@ material_trends = True
 
 def calculate_megatrend(index, megatrends):
 
+    # TODO Rückkopplung ok?
     value_megatrends = megatrends * ((index/100) + 1)
     return value_megatrends
 
 
-def calculate_pro_environmental_policies(megatrends):
-    # formula for: pro_environmental_policies
-    pro_environmental_policies = 0.5 + (megatrends/100)
+def calculate_pro_environmental_policies(megatrends, year, election_results):
+    # formula for pro_environmental_policies
+    if policy_fluctuation:
+        # year == 2 --> 2024: Nationalratswahl
+        # year == 7 --> 2029: Nationalratswahl
+        if year == 2 or year == 7:
+            fluctuation = random.uniform(-0.05, 0.05)
+            election_results.append(fluctuation)
+            policy_fluctuation_variable = 0 + fluctuation
+            print("election_results")
+            print(election_results)
+        elif year > 2 and year <= 6:
+            policy_fluctuation_variable = election_results[0]
+        elif year > 7 and year <= 11:
+            policy_fluctuation_variable = election_results[1]
+        else:
+            policy_fluctuation_variable = 0
+    else:
+        policy_fluctuation_variable = 0
+
+    pro_environmental_policies = (0.5 + (megatrends/100)) + policy_fluctuation_variable
+
+    print("pro_environmental_policies")
+    print(pro_environmental_policies)
+
     return pro_environmental_policies
 
 
@@ -66,12 +96,11 @@ def calculate_supply_of_wood(pro_environmental_policies, growth_rate, current_su
 
 
 def calculate_supply_of_non_wood_m(pro_environmental_policies, current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics, growth_rate_2):
-    # formula for: current_supply_non_wood_m
 
-    current_supply_of_steel = growth_rate_2 * current_supply_of_steel / pro_environmental_policies
-    current_supply_of_aluminium = growth_rate_2 * current_supply_of_aluminium / pro_environmental_policies
-    current_supply_of_glass = growth_rate_2 * current_supply_of_glass / pro_environmental_policies
-    current_supply_of_plastics = growth_rate_2 * current_supply_of_plastics / pro_environmental_policies
+    current_supply_of_steel = (growth_rate_2 * current_supply_of_steel) / pro_environmental_policies
+    current_supply_of_aluminium = (growth_rate_2 * current_supply_of_aluminium) / pro_environmental_policies
+    current_supply_of_glass = (growth_rate_2 * current_supply_of_glass) / pro_environmental_policies
+    current_supply_of_plastics = (growth_rate_2 * current_supply_of_plastics) / pro_environmental_policies
 
 
     return current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics
@@ -112,9 +141,10 @@ def calculate_demand_for_furniture(megatrends):
 
     # this material_trends_variable will change the demand so that
     # random furniture design trends can be implemented into the model
+    # material_trends_variable should give the market demand some variety
 
     if material_trends:
-        material_trends_variable = 0 + random.uniform(-0.1, 0.1)
+        material_trends_variable = 0 + random.uniform(-0.15, 0.15)
     else:
         material_trends_variable = 0
 
@@ -122,8 +152,7 @@ def calculate_demand_for_furniture(megatrends):
         demand_for_furniture = (megatrends / 1000 + 1) + material_trends_variable
     else:
         demand_for_furniture = (1 - (megatrends / 1000)) + material_trends_variable
-    print("demand_for_furniture")
-    print(demand_for_furniture)
+
     return demand_for_furniture
 
 
@@ -303,13 +332,14 @@ def run(counter):
     value_used_steel_for_furniture, value_used_aluminium_for_furniture, value_used_glass_for_furniture, value_used_plastics_for_furniture = [], [], [], []
     value_index = []
     value_gwp = []
+    election_results = []
 
 
     for year in range(counter):
         print("______________________")
-        print("Year (run): " + str(year + 1))
+        print("Year (run): " + str(2022 + year))
 
-        pro_environmental_policies = calculate_pro_environmental_policies(megatrends)
+        pro_environmental_policies = calculate_pro_environmental_policies(megatrends, year, election_results)
         # print(f"\nPro_environmental_policies: {pro_environmental_policies} dmnl\n")
 
         current_supply_of_wood = calculate_supply_of_wood(pro_environmental_policies, growth_rate, current_supply_of_wood)
@@ -395,7 +425,7 @@ def run(counter):
 
 if __name__ == "__main__":
 
-    data_dic = run(5)
+    data_dic = run(10)
 
     create_price_subplots(data_dic)
     create_material_supply_subplot(data_dic)
