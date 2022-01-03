@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 # TODO: make it so variables can be loaded in from an input data file
 # Global Initial Variables
-growth_rate = 1 # dmnl - for supply of wood market
-growth_rate_2 = 1  # dmnl - for supply of non wodden materials market
+growth_rate = 1.03 # dmnl - for supply of wood market
+growth_rate_2 = 1.02  # dmnl - for supply of non wodden materials market
 
 initial_megatrend = 50  # dmnl
 # the higher the megatrend, the higher environmental policies, the cheaper the price of wood
@@ -40,8 +40,11 @@ initial_price_aluminium = 2529.51  # euro
 initial_price_glass = 1975  # euro
 initial_price_plastics = 938.67  # euro
 
-# Initial Ratio to influence price of wood:
-initial_ratio_steel = 1
+# variable
+material_trends = True
+
+# Initial seed
+# seed = 10
 
 
 def calculate_megatrend(index, megatrends):
@@ -74,9 +77,9 @@ def calculate_supply_of_non_wood_m(pro_environmental_policies, current_supply_of
     return current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics
 
 
-def calculate_price_of_wood_m(initial_price_of_wood, current_supply_of_wood, initial_amount_of_wood, ratio_steel):
+def calculate_price_of_wood_m(initial_price_of_wood, current_supply_of_wood, initial_amount_of_wood):
     # formula for: price_of_wood
-    price_of_wood = ((initial_price_of_wood) / (current_supply_of_wood / initial_amount_of_wood))/ratio_steel
+    price_of_wood = ((initial_price_of_wood) / (current_supply_of_wood / initial_amount_of_wood))
     return price_of_wood
 
 
@@ -106,12 +109,21 @@ def calculate_price_of_non_wood_m(initial_price_of_wood, price_of_wood, initial_
 
 
 def calculate_demand_for_furniture(megatrends):
-    if megatrends >= 50:
-        demand_for_furniture = megatrends / 1000 + 1
-    else:
-        demand_for_furniture = 1 - (megatrends / 1000)
 
-    # print(demand_for_furniture)
+    # this material_trends_variable will change the demand so that
+    # random furniture design trends can be implemented into the model
+
+    if material_trends:
+        material_trends_variable = 0 + random.uniform(-0.1, 0.1)
+    else:
+        material_trends_variable = 0
+
+    if megatrends >= 50:
+        demand_for_furniture = (megatrends / 1000 + 1) + material_trends_variable
+    else:
+        demand_for_furniture = (1 - (megatrends / 1000)) + material_trends_variable
+    print("demand_for_furniture")
+    print(demand_for_furniture)
     return demand_for_furniture
 
 
@@ -129,10 +141,9 @@ def calculate_amount_of_wood_supply(pro_environmental_policies, current_stock_wo
     return current_stock_wood_supply
 
 
-def calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood):
+def calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood, ratio_steel):
 
-    # TODO price non wooden materials
-    used_wood_for_furniture = industry_wood_demand / (price_of_wood / initial_price_of_wood) * ratio_for_wood_furniture_demand
+    used_wood_for_furniture = (industry_wood_demand / (price_of_wood / initial_price_of_wood) * ratio_for_wood_furniture_demand) * ratio_steel
     return used_wood_for_furniture
 
 
@@ -184,7 +195,7 @@ def calculate_emission3():
 def create_price_subplots(data_dic):
 
     fig, ax = plt.subplots(8, figsize=(15,15))
-    fig.suptitle('Overview Prices')
+    # fig.suptitle('Overview Prices')
     fig.tight_layout()
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
     ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
@@ -212,7 +223,7 @@ def create_price_subplots(data_dic):
 
 def create_material_supply_subplot(data_dic):
     fig, ax = plt.subplots(8, figsize=(15,15))
-    fig.suptitle('Current Material Supplies')
+    # fig.suptitle('Current Material Supplies')
     fig.tight_layout()
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
     ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
@@ -241,7 +252,7 @@ def create_material_supply_subplot(data_dic):
 def create_used_materials_and_emissions_subplots(data_dic):
 
     fig, ax = plt.subplots(9, figsize=(15,15))
-    fig.suptitle('Used Materials + Emissions')
+    # fig.suptitle('Used Materials + Emissions')
     fig.tight_layout()
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
     ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
@@ -279,7 +290,6 @@ def run(counter):
     current_supply_of_aluminium = initial_supply_of_aluminium
     current_supply_of_glass = initial_supply_of_glass
     current_supply_of_plastics = initial_supply_of_plastics
-    ratio_steel = initial_ratio_steel
 
     # stored values from the model, so it is easier to plot them
     value_time = []
@@ -305,7 +315,7 @@ def run(counter):
         current_supply_of_wood = calculate_supply_of_wood(pro_environmental_policies, growth_rate, current_supply_of_wood)
         # print(f"Current_supply_of_wood: {current_supply_of_wood} tons\n")
 
-        price_of_wood = calculate_price_of_wood_m(initial_price_of_wood, current_supply_of_wood, initial_amount_of_wood, ratio_steel)
+        price_of_wood = calculate_price_of_wood_m(initial_price_of_wood, current_supply_of_wood, initial_amount_of_wood)
         # print(f"Price_of_wood: {price_of_wood} €\n")
 
         current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics = calculate_supply_of_non_wood_m(pro_environmental_policies, current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics, growth_rate_2)
@@ -317,7 +327,7 @@ def run(counter):
         ratio_for_wood_furniture_demand = calculate_demand_for_furniture(megatrends)
         # print(f"| Note: If demand is @ 1.0 - default demand is displayed - if demand increases - more wood furniture is demanded by the market |\nratio_for_wood_furniture_demand: {ratio_for_wood_furniture_demand} dmnl\n")
 
-        used_wood_for_furniture = calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood)
+        used_wood_for_furniture = calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood, ratio_steel)
         # print(f"used_wood_for_furniture: {used_wood_for_furniture} tons\n")
 
         used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture = calculate_stock_amount_of_non_wood_material(initial_price_steel, price_of_steel,industry_steel_demand,initial_price_aluminium, price_of_aluminium, industry_aluminium_demand,initial_price_glass, price_of_glass, industry_glass_demand,initial_price_plastics, price_of_plastics, industry_placstics_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood)
@@ -385,14 +395,16 @@ def run(counter):
 
 if __name__ == "__main__":
 
-    data_dic = run(20)
+    data_dic = run(5)
 
     create_price_subplots(data_dic)
     create_material_supply_subplot(data_dic)
     create_used_materials_and_emissions_subplots(data_dic)
     print("\nPlots created and saved.")
-    # for key, value in data_dic.items():
-    #     print('%s,%s\n' % (key, value))
+
+
+    for key, value in data_dic.items():
+        print('%s,%s\n' % (key, value))
 
     # with open("data.csv", "w") as f:
     #         f.write(json.dumps(data_dic))
