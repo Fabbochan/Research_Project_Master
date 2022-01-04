@@ -1,6 +1,8 @@
 # import json
 import random
 import matplotlib.pyplot as plt
+import pandas as pd
+plt.style.use("classic")
 
 
 # TODO: make it so variables can be loaded in from an input data file
@@ -48,7 +50,7 @@ material_trends = True
 # variable to fluctuate the current policies in the austrian government
 # if policies should not only steadly rise - displays the changing interest within politic interest
 # default = False
-policy_fluctuation = True
+policy_fluctuation = False
 
 # Initial seed
 # seed = 10
@@ -166,7 +168,7 @@ def calculate_amount_of_wood_supply(pro_environmental_policies, current_stock_wo
     # formula for: current_stock_wood_supply
 
     current_stock_wood_supply = inflow - outflow
-    print(f"Amount_of_wood_stock: inflow: {inflow}, outflow: {outflow} and current_stock_wood_supply: {current_stock_wood_supply}")
+    # print(f"Amount_of_wood_stock: inflow: {inflow}, outflow: {outflow} and current_stock_wood_supply: {current_stock_wood_supply}")
     return current_stock_wood_supply
 
 
@@ -223,9 +225,9 @@ def calculate_emission3():
 
 def create_price_subplots(data_dic):
 
-    fig, ax = plt.subplots(8, figsize=(15,15))
+    fig, ax = plt.subplots(8, figsize=(22,22))
     # fig.suptitle('Overview Prices')
-    fig.tight_layout()
+    fig.tight_layout(pad=3.0)
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
     ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
     ax[0].set_title("megatrends")
@@ -244,16 +246,16 @@ def create_price_subplots(data_dic):
     ax[7].plot(data_dic["value_time"], data_dic["value_price_of_plastics"])
     ax[7].set_title("value_price_of_plastics (€)")
     for i in range(8):
-        ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
+        ax[i].grid()
     plt.savefig("static/overview_prices")
     plt.close()
     plt.show()
 
 
 def create_material_supply_subplot(data_dic):
-    fig, ax = plt.subplots(8, figsize=(15,15))
+    fig, ax = plt.subplots(8, figsize=(22,22))
     # fig.suptitle('Current Material Supplies')
-    fig.tight_layout()
+    fig.tight_layout(pad=3.0)
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
     ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
     ax[0].set_title("megatrends")
@@ -272,7 +274,7 @@ def create_material_supply_subplot(data_dic):
     ax[7].plot(data_dic["value_time"], data_dic["value_current_supply_of_plastics"])
     ax[7].set_title("value_current_supply_of_plastics (tons)")
     for i in range(8):
-        ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
+        ax[i].grid()
     plt.savefig("static/current_material_supplies")
     plt.close()
     plt.show()
@@ -280,9 +282,9 @@ def create_material_supply_subplot(data_dic):
 
 def create_used_materials_and_emissions_subplots(data_dic):
 
-    fig, ax = plt.subplots(9, figsize=(15,15))
+    fig, ax = plt.subplots(9, figsize=(22,22))
     # fig.suptitle('Used Materials + Emissions')
-    fig.tight_layout()
+    fig.tight_layout(pad=3.0)
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
     ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"])
     ax[0].set_title("megatrends")
@@ -301,9 +303,9 @@ def create_used_materials_and_emissions_subplots(data_dic):
     ax[7].plot(data_dic["value_time"], data_dic["value_used_plastics_for_furniture"])
     ax[7].set_title("value_used_plastics_for_furniture (tons)")
     ax[8].plot(data_dic["value_time"], data_dic["value_gwp"])
-    ax[8].set_title("KG CO2 eq. emitted per year")
+    ax[8].set_title("KG CO2 eq. emitted (per year)")
     for i in range(9):
-        ax[i].grid(b=True, which='major', color='#666666', linestyle='-')
+        ax[i].grid()
     plt.savefig("static/used_materials_and_emissions")
     plt.close()
     plt.show()
@@ -395,8 +397,6 @@ def run(counter):
         value_used_plastics_for_furniture.append(round(used_plastics_for_furniture, dv))
         value_gwp.append(gwp)
 
-
-
     data_dic = {"value_time": value_time,
                 "value_index": value_index,
                 "value_pro_environmental_policies": value_pro_environmental_policies,
@@ -420,22 +420,31 @@ def run(counter):
                 }
 
 
+
     return data_dic
 
 
 if __name__ == "__main__":
 
+    print("\nCreating Data Dict ...\n")
     data_dic = run(10)
+    print("\nData Dict created ...\n")
 
+    print("\nCreating plots ...\n")
     create_price_subplots(data_dic)
     create_material_supply_subplot(data_dic)
     create_used_materials_and_emissions_subplots(data_dic)
-    print("\nPlots created and saved.")
+    print("\nPlots created and saved ...\n")
 
+    # print("Values in Data dict:")
+    # for key, value in data_dic.items():
+    #     print('%s,%s\n' % (key, value))
 
-    for key, value in data_dic.items():
-        print('%s,%s\n' % (key, value))
+    print("\nCreating Simulation Dataframe ...\n")
+    df = pd.DataFrame(data_dic, dtype=float)
+    df.to_csv(r"static\simulation.csv", index=False, sep=";")
+    print("\nSimulation Dataframe created and saved ...\n")
 
-    # with open("data.csv", "w") as f:
-    #         f.write(json.dumps(data_dic))
+    pd.set_option("display.max_rows", None, "display.max_columns", None)
+    print(df.head())
 
