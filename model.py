@@ -1,94 +1,113 @@
-# import json
 import random
 import matplotlib.pyplot as plt
 import pandas as pd
+from termcolor import colored
 plt.style.use("classic")
 
 
-# TODO: make it so variables can be loaded in from an input data file
 # Global Initial Variables
-growth_rate = 1 # dmnl - for supply of wood market
-growth_rate_2 = 1  # dmnl - for supply of non wodden materials market
+# growth_rate is for the wood market
+growth_rate = 1.025
+# growth_rate_2 is for the non wood market
+growth_rate_2 = 1.02
 
-initial_megatrend = 50  # dmnl
+# Sets the initial amount the megatrend should have for the first iteration in the model
 # the higher the megatrend, the higher environmental policies, the cheaper the price of wood
+initial_megatrend = 50
 
-initial_amount_of_wood = 16790000  # tons
-industry_wood_demand = 132593  # tons
+# Values below are tons
+initial_amount_of_wood = 16790000
+industry_wood_demand = 132593
 
-ratio_metals = 33805  # ratio is 80% aluminium and 20% steel
-industry_steel_demand = ratio_metals * 0.2  # tons
-industry_aluminium_demand = ratio_metals * 0.8  # tons
-# caclculated: gütereinsatzstatistik / preis
-industry_glass_demand = 6890  # tons
-industry_placstics_demand = 45715  # tons
+# Current assumption is 80% aluminium and 20% steel
+ratio_metals = 33805
+# Values below are tons and flexible because the dependency to the ratio_metals variable
+industry_steel_demand = ratio_metals * 0.2
+industry_aluminium_demand = ratio_metals * 0.8
+
+# Values are calculated from data as: "gütereinsatzstatistik / preis"
+industry_glass_demand = 6890
+industry_placstics_demand = 45715
 
 # Initial Supplies
-# 7.4 millionen tons get manifactured each year in austria
-initial_supply_of_steel = 7400000  # tons
-# ratio supply_of_steel / 35 for aluminium
-initial_supply_of_aluminium = 200000  # tons
-# laut WKO Bericht
-initial_supply_of_glass = 524000  # tons
-# in deutschland 17.9 millionen / 0.1 für Österreich
-initial_supply_of_plastics = 1790000  # tons
+# 7.4 million tons get manufactured each year in austria
+initial_supply_of_steel = 7400000
+# ratio supply_of_steel  / 35 for aluminium
+initial_supply_of_aluminium = 200000
+# as stated in the "WKO-Report"
+initial_supply_of_glass = 524000
+# In Germany 17.9 million tons supply of plastics --> 10% for Austria
+initial_supply_of_plastics = 1790000
 
-# Initial Prices
-initial_price_of_wood = 100  # euro
-initial_price_steel = 424.16  # euro
-initial_price_aluminium = 2529.51  # euro
-# Deutschland - Statisitk Gesamtumsatz: 1321 euro pro tonne
-# Östrreich - WKO branchenindustry: 1950 euro pro tonne
-initial_price_glass = 1975  # euro
-initial_price_plastics = 938.67  # euro
+# Initial Prices in €
+initial_price_of_wood = 100
+initial_price_steel = 424.16
+initial_price_aluminium = 2529.51
+# Germany - statistics Gesamtumsatz: 1321 € per ton
+# Austria - WKO branchenindustry: 1950 € per ton
+initial_price_glass = 1975
+initial_price_plastics = 938.67
 
-# variable to fluctuate the demand for wood materials
+# Variable to fluctuate the demand for wood materials
 # default = False
 # TODO: Look how much the market changed and fluctuated over time in the real market
-material_trends = True
+material_trends = False
 
 # variable to fluctuate the current policies in the austrian government
-# if policies should not only steadly rise - displays the changing interest within politic interest
+# if policies should not only continually rise - displays the changing interest within politic interest
 # default = False
 policy_fluctuation = False
 
-# Initial seed
+# Initial seed for random values (NOT YET IMPLEMENTED - JUST A PLACEHOLDER)
 # seed = 10
 
 
 def calculate_megatrend(index, megatrends):
+    """
+    This function calculates the parameter megatrends
+    :param index: is the index of how much wood is used in the market
+    :param megatrends: shows a general want in society for more sustainability
+    :return: the calculated value for megatrends
+    """
 
     # TODO Rückkopplung ok?
+    # TODO Weitere Überlegung bzgl. Berechnung --> Positive Rückkopplung: mehr supply of wood,
+    # TODO sinkt holzpreis (...) steigert den index, steigert den megatrend usw.
+
     value_megatrends = megatrends * ((index/100) + 1)
     return value_megatrends
 
 
 def calculate_pro_environmental_policies(megatrends, year, election_results):
-    # formula for pro_environmental_policies
+    """
+    This function calculates the pro_environmental_policies. It is also provided with the possibility
+    of events, if the event triggers are set to True.
+    :param megatrends: gets passed to the function when called
+    :param year: is the counter of the for main model loop so we can check in which iteration we are and use it for events
+    :param election_results: is a list that stores the fluctuation parameter if year == 2 and year == 4
+    :return: returns the calculated value for pro_environmental_policies and the list election_results
+    """
+    election_results_list = election_results
     if policy_fluctuation:
         # year == 2 --> 2024: Nationalratswahl
         # year == 7 --> 2029: Nationalratswahl
         if year == 2 or year == 7:
-            fluctuation = random.uniform(-0.05, 0.05)
-            election_results.append(fluctuation)
+            fluctuation = round(random.uniform(-0.05, 0.05),4)
+            election_results_list.append(fluctuation)
             policy_fluctuation_variable = 0 + fluctuation
-            print("election_results")
-            print(election_results)
         elif year > 2 and year <= 6:
-            policy_fluctuation_variable = election_results[0]
+            policy_fluctuation_variable = election_results_list[0]
         elif year > 7 and year <= 11:
-            policy_fluctuation_variable = election_results[1]
+            policy_fluctuation_variable = election_results_list[1]
         else:
             policy_fluctuation_variable = 0
     else:
         policy_fluctuation_variable = 0
 
+    # TODO Calculation for pro_environmental_policies could be more sophisticated
     pro_environmental_policies = (0.5 + (megatrends/100)) + policy_fluctuation_variable
 
-    print("pro_environmental_policies")
-    print(pro_environmental_policies)
-
-    return pro_environmental_policies
+    return pro_environmental_policies, election_results_list
 
 
 def calculate_supply_of_wood(pro_environmental_policies, growth_rate, current_supply_of_wood):
@@ -97,7 +116,8 @@ def calculate_supply_of_wood(pro_environmental_policies, growth_rate, current_su
     return current_supply_of_wood_return
 
 
-def calculate_supply_of_non_wood_m(pro_environmental_policies, current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics, growth_rate_2):
+def calculate_supply_of_non_wood_m(pro_environmental_policies, current_supply_of_steel, current_supply_of_aluminium,
+                                   current_supply_of_glass, current_supply_of_plastics, growth_rate_2):
 
     current_supply_of_steel = (growth_rate_2 * current_supply_of_steel) / pro_environmental_policies
     current_supply_of_aluminium = (growth_rate_2 * current_supply_of_aluminium) / pro_environmental_policies
@@ -114,7 +134,11 @@ def calculate_price_of_wood_m(initial_price_of_wood, current_supply_of_wood, ini
     return price_of_wood
 
 
-def calculate_price_of_non_wood_m(initial_price_of_wood, price_of_wood, initial_price_steel, current_supply_of_steel, initial_supply_of_steel, initial_price_aluminium, current_supply_of_aluminium, initial_supply_of_aluminium, initial_price_glass, current_supply_of_glass, initial_supply_of_glass, initial_price_plastics, current_supply_of_plastics, initial_supply_of_plastics):
+def calculate_price_of_non_wood_m(initial_price_of_wood, price_of_wood, initial_price_steel,
+                                  current_supply_of_steel, initial_supply_of_steel, initial_price_aluminium,
+                                  current_supply_of_aluminium, initial_supply_of_aluminium, initial_price_glass,
+                                  current_supply_of_glass, initial_supply_of_glass, initial_price_plastics,
+                                  current_supply_of_plastics, initial_supply_of_plastics):
 
     ratio_wood = price_of_wood/initial_price_of_wood
     if ratio_wood >= 1:
@@ -159,30 +183,31 @@ def calculate_demand_for_furniture(megatrends):
 
 
 def calculate_amount_of_wood_supply(pro_environmental_policies, current_stock_wood_supply, growth_rate):
-    # formula for: inflow
 
     inflow = current_stock_wood_supply * pro_environmental_policies * growth_rate
-    # formula for: outflow
-
     outflow = initial_amount_of_wood
-    # formula for: current_stock_wood_supply
-
     current_stock_wood_supply = inflow - outflow
-    # print(f"Amount_of_wood_stock: inflow: {inflow}, outflow: {outflow} and current_stock_wood_supply: {current_stock_wood_supply}")
+
     return current_stock_wood_supply
 
 
-def calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood, ratio_steel):
+def calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand,
+                                            initial_price_of_wood, ratio_steel):
 
     used_wood_for_furniture = (industry_wood_demand / (price_of_wood / initial_price_of_wood) * ratio_for_wood_furniture_demand) * ratio_steel
     return used_wood_for_furniture
 
 
-def calculate_stock_amount_of_non_wood_material(initial_price_steel, price_of_steel,industry_steel_demand,initial_price_aluminium, price_of_aluminium, industry_aluminium_demand,initial_price_glass, price_of_glass, industry_glass_demand,initial_price_plastics, price_of_plastics, industry_placstics_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood):
+def calculate_stock_amount_of_non_wood_material(initial_price_steel, price_of_steel,industry_steel_demand,
+                                                initial_price_aluminium, price_of_aluminium, industry_aluminium_demand,
+                                                initial_price_glass, price_of_glass, industry_glass_demand,
+                                                initial_price_plastics, price_of_plastics, industry_placstics_demand,
+                                                price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood):
 
     ratio_wood_price = price_of_wood/initial_price_of_wood
 
-    # TODO price of wood
+    # TODO: Check if a price of wood influence is needed here for the model
+
     used_steel_for_furniture = (industry_steel_demand / (price_of_steel / initial_price_steel) / ratio_for_wood_furniture_demand) * ratio_wood_price
     used_aluminium_for_furniture = (industry_aluminium_demand / (price_of_aluminium / initial_price_aluminium) / ratio_for_wood_furniture_demand) * ratio_wood_price
     used_glass_for_furniture = (industry_glass_demand / (price_of_glass / initial_price_glass) / ratio_for_wood_furniture_demand) * ratio_wood_price
@@ -191,24 +216,26 @@ def calculate_stock_amount_of_non_wood_material(initial_price_steel, price_of_st
     return used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture
 
 
-def calculate_index(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture):
+def calculate_index(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture,
+                    used_glass_for_furniture, used_plastics_for_furniture):
 
     sum_used_wood = used_wood_for_furniture
     sum_non_wood = used_steel_for_furniture + used_aluminium_for_furniture + used_glass_for_furniture + used_plastics_for_furniture
     return sum_used_wood / (sum_used_wood + sum_non_wood)
 
 
-def calculate_global_warming_potential(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture):
-    steel =  1.836568936 # per tonne
-    plastic = 3.451825009 # per tonne
+def calculate_global_warming_potential(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture,
+                                       used_glass_for_furniture, used_plastics_for_furniture):
+    steel =  1.836568936 # kg Co2 per tonne
+    plastic = 3.451825009 # kg Co2 per tonne
 
     # keine richtig geile quelle für glas: http://www.greenrationbook.org.uk/resources/footprints-glass/
-    glass = 4 # per tonne
+    glass = 4 # kg Co2 per tonne
 
-    wood = 0.28363 # per tonne
+    wood = 0.28363 # kg Co2 per tonne
 
     # quelle für aluminium:
-    aluminium = 8.14
+    aluminium = 8.14 # kg Co2 per tonne
 
     gwp = used_wood_for_furniture * wood + used_steel_for_furniture * steel + used_aluminium_for_furniture * aluminium + used_plastics_for_furniture * plastic + used_glass_for_furniture * glass
 
@@ -313,7 +340,7 @@ def create_used_materials_and_emissions_subplots(data_dic):
 
 def run(counter):
     # setup initial variables
-    # dv = dezimal values
+    # dv = decimal values
     dv = 2
     megatrends = initial_megatrend
     current_supply_of_wood = initial_amount_of_wood
@@ -322,7 +349,7 @@ def run(counter):
     current_supply_of_glass = initial_supply_of_glass
     current_supply_of_plastics = initial_supply_of_plastics
 
-    # stored values from the model, so it is easier to plot them
+    # here initial lists get created so we can store the model data during the for loop
     value_time = []
     value_megatrends = []
     value_pro_environmental_policies = []
@@ -338,59 +365,47 @@ def run(counter):
 
 
     for year in range(counter):
-        print("______________________")
-        print("Year (run): " + str(2022 + year))
+        print(f"Run: {year} "+ " / Year: " + str(2022 + year))
 
-        pro_environmental_policies = calculate_pro_environmental_policies(megatrends, year, election_results)
-        # print(f"\nPro_environmental_policies: {pro_environmental_policies} dmnl\n")
+        pro_environmental_policies, election_results = calculate_pro_environmental_policies(megatrends, year, election_results)
 
         current_supply_of_wood = calculate_supply_of_wood(pro_environmental_policies, growth_rate, current_supply_of_wood)
-        # print(f"Current_supply_of_wood: {current_supply_of_wood} tons\n")
 
         price_of_wood = calculate_price_of_wood_m(initial_price_of_wood, current_supply_of_wood, initial_amount_of_wood)
-        # print(f"Price_of_wood: {price_of_wood} €\n")
 
         current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics = calculate_supply_of_non_wood_m(pro_environmental_policies, current_supply_of_steel, current_supply_of_aluminium, current_supply_of_glass, current_supply_of_plastics, growth_rate_2)
-        # print(f"Current_supply_of_steel: {current_supply_of_steel} tons\nCurrent_supply_of_aluminium: {current_supply_of_aluminium} tons\nCurrent_supply_of_glass: {current_supply_of_glass} tons\nCurrent_supply_of_plastics: {current_supply_of_plastics} tons\n")
 
         price_of_steel, price_of_aluminium, price_of_glass, price_of_plastics, ratio_steel = calculate_price_of_non_wood_m(initial_price_of_wood, price_of_wood, initial_price_steel, current_supply_of_steel, initial_supply_of_steel, initial_price_aluminium, current_supply_of_aluminium, initial_supply_of_aluminium, initial_price_glass, current_supply_of_glass, initial_supply_of_glass, initial_price_plastics, current_supply_of_plastics, initial_supply_of_plastics)
-        # print(f"price_of_steel: {price_of_steel} €\nPrice_of_aluminium: {price_of_aluminium} €\nPrice_of_glass: {price_of_glass} €\nPrice_of_plastics: {price_of_plastics} €\n")
 
         ratio_for_wood_furniture_demand = calculate_demand_for_furniture(megatrends)
-        # print(f"| Note: If demand is @ 1.0 - default demand is displayed - if demand increases - more wood furniture is demanded by the market |\nratio_for_wood_furniture_demand: {ratio_for_wood_furniture_demand} dmnl\n")
 
         used_wood_for_furniture = calculate_stock_amount_of_wood_material(industry_wood_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood, ratio_steel)
-        # print(f"used_wood_for_furniture: {used_wood_for_furniture} tons\n")
 
         used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture = calculate_stock_amount_of_non_wood_material(initial_price_steel, price_of_steel,industry_steel_demand,initial_price_aluminium, price_of_aluminium, industry_aluminium_demand,initial_price_glass, price_of_glass, industry_glass_demand,initial_price_plastics, price_of_plastics, industry_placstics_demand, price_of_wood, ratio_for_wood_furniture_demand, initial_price_of_wood)
-        # print(f"Used_steel_for_furniture: {used_steel_for_furniture} tons\nUsed_aluminium_for_furniture: {used_aluminium_for_furniture} tons\nUsed_glass_for_furniture: {used_glass_for_furniture} tons\nUsed_plastics_for_furniture: {used_plastics_for_furniture} tons")
 
         index = calculate_index(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture)
-        # print(f"\nindex: {index} %")
 
         megatrends = calculate_megatrend(index, megatrends)
-        # print(f"\nmegatrends: {megatrends}")
 
         gwp = calculate_global_warming_potential(used_wood_for_furniture, used_steel_for_furniture, used_aluminium_for_furniture, used_glass_for_furniture, used_plastics_for_furniture)
         gwp = round(gwp, dv)
-        # print(f"\nKg C02 eq: {gwp}")
         print("______________________")
 
         value_time.append(year + 1)
-        value_price_of_wood.append(round(price_of_wood,dv))
-        value_index.append(round(index,dv))
+        value_price_of_wood.append(round(price_of_wood, dv))
+        value_index.append(round(index, dv))
         value_pro_environmental_policies.append(round(pro_environmental_policies, dv))
-        value_megatrends.append(round(megatrends,dv))
-        value_price_of_steel.append(round(price_of_steel,dv))
+        value_megatrends.append(round(megatrends, dv))
+        value_price_of_steel.append(round(price_of_steel, dv))
         value_price_of_aluminium.append(round(price_of_aluminium,dv))
-        value_price_of_glass.append(round(price_of_glass,dv))
-        value_price_of_plastics.append(round(price_of_plastics,dv))
+        value_price_of_glass.append(round(price_of_glass, dv))
+        value_price_of_plastics.append(round(price_of_plastics, dv))
         value_current_supply_of_wood.append(round(current_supply_of_wood, dv))
         value_current_supply_of_steel.append(round(current_supply_of_steel, dv))
         value_current_supply_of_aluminium.append(round(current_supply_of_aluminium, dv))
         value_current_supply_of_glass.append(round(current_supply_of_glass, dv))
         value_current_supply_of_plastics.append(round(current_supply_of_plastics, dv))
-        value_used_wood_for_furniture.append(round(used_wood_for_furniture,dv))
+        value_used_wood_for_furniture.append(round(used_wood_for_furniture, dv))
         value_used_steel_for_furniture.append(round(used_steel_for_furniture, dv))
         value_used_aluminium_for_furniture.append(round(used_aluminium_for_furniture, dv))
         value_used_glass_for_furniture.append(round(used_glass_for_furniture, dv))
@@ -419,32 +434,31 @@ def run(counter):
                 "value_gwp": value_gwp
                 }
 
-
-
     return data_dic
 
 
 if __name__ == "__main__":
 
-    print("\nCreating Data Dict ...\n")
+    print("\nSystem message: Creating Data Dict ...\n")
     data_dic = run(10)
-    print("\nData Dict created ...\n")
+    print(colored("\nSystem message: Data Dict created!\n", "green"))
 
-    print("\nCreating plots ...\n")
+    print("\nSystem message: Creating plots ...\n")
     create_price_subplots(data_dic)
     create_material_supply_subplot(data_dic)
     create_used_materials_and_emissions_subplots(data_dic)
-    print("\nPlots created and saved ...\n")
+    print(colored("\nSystem message: Plots created and saved!\n", "green"))
 
     # print("Values in Data dict:")
     # for key, value in data_dic.items():
     #     print('%s,%s\n' % (key, value))
 
-    print("\nCreating Simulation Dataframe ...\n")
+    print("\nSystem message: Creating Simulation Dataframe ...\n")
     df = pd.DataFrame(data_dic, dtype=float)
     df.to_csv(r"static\simulation.csv", index=False, sep=";")
-    print("\nSimulation Dataframe created and saved ...\n")
+    print(colored("\nSystem message: Simulation Dataframe created and saved!\n", "green"))
 
     pd.set_option("display.max_rows", None, "display.max_columns", None)
+    print(colored("\nSystem message: Dataframe head:", "green"))
     print(df.head())
 
