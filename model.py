@@ -58,7 +58,9 @@ material_trends = False
 # default = False
 policy_fluctuation = False
 
-#defaul = False
+# TODO: implement Inflation so that the prices keep on rising with rising supply
+# currently prices fall if there is a growth rate included (aka not > 1)
+# defaul = False
 inflation = False
 
 # Initial seed for random values (NOT YET IMPLEMENTED - JUST A PLACEHOLDER)
@@ -454,15 +456,15 @@ if __name__ == "__main__":
     data_dic = run(10)
     print(colored("\nSystem message: Data Dict created!\n", "green"))
 
-    # print("\nSystem message: Creating plots ...\n")
-    # create_price_subplots(data_dic)
-    # create_material_supply_subplot(data_dic)
-    # create_used_materials_and_emissions_subplots(data_dic)
-    # print(colored("\nSystem message: Plots created and saved!\n", "green"))
-    #
-    # # print("Values in Data dict:")
-    # # for key, value in data_dic.items():
-    # #     print('%s,%s\n' % (key, value))
+    print("\nSystem message: Creating plots ...\n")
+    create_price_subplots(data_dic)
+    create_material_supply_subplot(data_dic)
+    create_used_materials_and_emissions_subplots(data_dic)
+    print(colored("\nSystem message: Plots created and saved!\n", "green"))
+
+    # print("Values in Data dict:")
+    # for key, value in data_dic.items():
+    #     print('%s,%s\n' % (key, value))
 
     print("\nSystem message: Creating Simulation Dataframe ...\n")
     df = pd.DataFrame(data_dic, dtype=float)
