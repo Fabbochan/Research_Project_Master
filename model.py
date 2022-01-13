@@ -259,27 +259,27 @@ def calculate_emission3():
     pass
 
 
-def create_price_subplots(data_dic):
+def create_price_subplots(data_dic, **plot_params):
 
     fig, ax = plt.subplots(8, figsize=(22,22))
     # fig.suptitle('Overview Prices')
     fig.tight_layout(pad=3.0)
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
-    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"], marker='o')
+    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"], **plot_params)
     ax[0].set_title("megatrends")
-    ax[1].plot(data_dic["value_time"], data_dic["value_index"], marker='o')
+    ax[1].plot(data_dic["value_time"], data_dic["value_index"], **plot_params)
     ax[1].set_title("index")
-    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"], marker='o')
+    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"], **plot_params)
     ax[2].set_title("pro_environmental_policies")
-    ax[3].plot(data_dic["value_time"], data_dic["value_price_of_wood"], marker='o')
+    ax[3].plot(data_dic["value_time"], data_dic["value_price_of_wood"], **plot_params)
     ax[3].set_title("value_price_of_wood (€)")
-    ax[4].plot(data_dic["value_time"], data_dic["value_price_of_steel"], marker='o')
+    ax[4].plot(data_dic["value_time"], data_dic["value_price_of_steel"], **plot_params)
     ax[4].set_title("value_price_of_steel (€)")
-    ax[5].plot(data_dic["value_time"], data_dic["value_price_of_aluminium"], marker='o')
+    ax[5].plot(data_dic["value_time"], data_dic["value_price_of_aluminium"], **plot_params)
     ax[5].set_title("value_price_of_aluminium (€)")
-    ax[6].plot(data_dic["value_time"], data_dic["value_price_of_glass"], marker='o')
+    ax[6].plot(data_dic["value_time"], data_dic["value_price_of_glass"], **plot_params)
     ax[6].set_title("value_price_of_glass (€)")
-    ax[7].plot(data_dic["value_time"], data_dic["value_price_of_plastics"], marker='o')
+    ax[7].plot(data_dic["value_time"], data_dic["value_price_of_plastics"], **plot_params)
     ax[7].set_title("value_price_of_plastics (€)")
     for i in range(8):
         ax[i].grid()
@@ -288,26 +288,26 @@ def create_price_subplots(data_dic):
     plt.show()
 
 
-def create_material_supply_subplot(data_dic):
+def create_material_supply_subplot(data_dic, **plot_params):
     fig, ax = plt.subplots(8, figsize=(22,22))
     # fig.suptitle('Current Material Supplies')
     fig.tight_layout(pad=3.0)
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
-    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"], marker='o')
+    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"], **plot_params)
     ax[0].set_title("megatrends")
     ax[1].plot(data_dic["value_time"], data_dic["value_index"], marker='o')
     ax[1].set_title("index")
-    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"], marker='o')
+    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"], **plot_params)
     ax[2].set_title("pro_environmental_policies")
-    ax[3].plot(data_dic["value_time"], data_dic["value_current_supply_of_wood"], marker='o')
+    ax[3].plot(data_dic["value_time"], data_dic["value_current_supply_of_wood"], **plot_params)
     ax[3].set_title("value_current_supply_of_wood (tons)")
-    ax[4].plot(data_dic["value_time"], data_dic["value_current_supply_of_steel"], marker='o')
+    ax[4].plot(data_dic["value_time"], data_dic["value_current_supply_of_steel"], **plot_params)
     ax[4].set_title("value_current_supply_of_steel (tons)")
-    ax[5].plot(data_dic["value_time"], data_dic["value_current_supply_of_aluminium"], marker='o')
+    ax[5].plot(data_dic["value_time"], data_dic["value_current_supply_of_aluminium"], **plot_params)
     ax[5].set_title("value_current_supply_of_aluminium (tons)")
-    ax[6].plot(data_dic["value_time"], data_dic["value_current_supply_of_glass"], marker='o')
+    ax[6].plot(data_dic["value_time"], data_dic["value_current_supply_of_glass"], **plot_params)
     ax[6].set_title("value_current_supply_of_glass (tons)")
-    ax[7].plot(data_dic["value_time"], data_dic["value_current_supply_of_plastics"], marker='o')
+    ax[7].plot(data_dic["value_time"], data_dic["value_current_supply_of_plastics"], **plot_params)
     ax[7].set_title("value_current_supply_of_plastics (tons)")
     for i in range(8):
         ax[i].grid()
@@ -316,29 +316,29 @@ def create_material_supply_subplot(data_dic):
     plt.show()
 
 
-def create_used_materials_and_emissions_subplots(data_dic):
+def create_used_materials_and_emissions_subplots(data_dic, **plot_params):
 
     fig, ax = plt.subplots(9, figsize=(22,22))
     # fig.suptitle('Used Materials + Emissions')
     fig.tight_layout(pad=3.0)
     # plt.grid(color='b', linestyle='-', linewidth=0.1)
-    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"], marker='o')
+    ax[0].plot(data_dic["value_time"], data_dic["value_megatrends"], **plot_params)
     ax[0].set_title("megatrends")
-    ax[1].plot(data_dic["value_time"], data_dic["value_index"], marker='o')
+    ax[1].plot(data_dic["value_time"], data_dic["value_index"], **plot_params)
     ax[1].set_title("index")
-    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"], marker='o')
+    ax[2].plot(data_dic["value_time"], data_dic["value_pro_environmental_policies"], **plot_params)
     ax[2].set_title("pro_environmental_policies")
-    ax[3].plot(data_dic["value_time"], data_dic["value_used_wood_for_furniture"], marker='o')
+    ax[3].plot(data_dic["value_time"], data_dic["value_used_wood_for_furniture"], **plot_params)
     ax[3].set_title("value_used_wood_for_furniture (tons)")
-    ax[4].plot(data_dic["value_time"], data_dic["value_used_steel_for_furniture"], marker='o')
+    ax[4].plot(data_dic["value_time"], data_dic["value_used_steel_for_furniture"], **plot_params)
     ax[4].set_title("value_used_steel_for_furniture (tons)")
-    ax[5].plot(data_dic["value_time"], data_dic["value_used_aluminium_for_furniture"], marker='o')
+    ax[5].plot(data_dic["value_time"], data_dic["value_used_aluminium_for_furniture"], **plot_params)
     ax[5].set_title("value_used_aluminium_for_furniture (tons)")
-    ax[6].plot(data_dic["value_time"], data_dic["value_used_glass_for_furniture"], marker='o')
+    ax[6].plot(data_dic["value_time"], data_dic["value_used_glass_for_furniture"], **plot_params)
     ax[6].set_title("value_used_glass_for_furniture (tons)")
-    ax[7].plot(data_dic["value_time"], data_dic["value_used_plastics_for_furniture"], marker='o')
+    ax[7].plot(data_dic["value_time"], data_dic["value_used_plastics_for_furniture"], **plot_params)
     ax[7].set_title("value_used_plastics_for_furniture (tons)")
-    ax[8].plot(data_dic["value_time"], data_dic["value_gwp"], marker='o')
+    ax[8].plot(data_dic["value_time"], data_dic["value_gwp"], **plot_params)
     ax[8].set_title("KG CO2 eq. emitted (per year)")
     for i in range(9):
         ax[i].grid()
@@ -457,14 +457,12 @@ if __name__ == "__main__":
     print(colored("\nSystem message: Data Dict created!\n", "green"))
 
     print("\nSystem message: Creating plots ...\n")
-    create_price_subplots(data_dic)
-    create_material_supply_subplot(data_dic)
-    create_used_materials_and_emissions_subplots(data_dic)
-    print(colored("\nSystem message: Plots created and saved!\n", "green"))
 
-    # print("Values in Data dict:")
-    # for key, value in data_dic.items():
-    #     print('%s,%s\n' % (key, value))
+
+    create_price_subplots(data_dic, marker="o")
+    create_material_supply_subplot(data_dic, marker="o")
+    create_used_materials_and_emissions_subplots(data_dic, marker="o")
+    print(colored("\nSystem message: Plots created and saved!\n", "green"))
 
     print("\nSystem message: Creating Simulation Dataframe ...\n")
     df = pd.DataFrame(data_dic, dtype=float)
