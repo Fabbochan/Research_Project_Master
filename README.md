@@ -8,6 +8,8 @@ Within the model.py file, you can find the actual model developed from our resea
 
 The model will create 3 png files as which display the plots and one csv file, which contains all the necessary data. 
 
+The model will overwrite old output files, since it creates them with the same name as last time. 
+
 ## NOTICE: 
 
 If you want to display your results with the show.py program, please store the png files, created from the model, in the static directory. Once the files are stored, start the show.py file and navigate to the link, provided in the output terminal.
