@@ -57,7 +57,7 @@ extreme_inflation = False
 
 # event trigger for supply crisis: wood
 # default = False
-supply_crisis_wood = True
+supply_crisis_wood = False
 
 # event trigger for supply crisis: aluminium
 # default = False
@@ -178,9 +178,9 @@ def calculate_price_of_non_wood_m(inflation_rate, year, price_of_steel, price_of
 
     if pro_environmental_policies < 1:
         price_increase = 1
-    elif pro_environmental_policies >= 1 and pro_environmental_policies < 1.09:
+    elif pro_environmental_policies >= 1 and pro_environmental_policies < 1.1:
         price_increase = 1.05
-    elif pro_environmental_policies >= 1.09 and pro_environmental_policies <= 1.18:
+    elif pro_environmental_policies >= 1.1 and pro_environmental_policies <= 1.18:
         price_increase = 1.1
     else:
         price_increase = 1.2
@@ -217,8 +217,8 @@ def calculate_demand_for_wood_furniture(year, megatrends):
     # random furniture design trends can be implemented into the model
     # material_trends_variable should give the market demand some variety
 
-    crisis_year1_bool = False
-    crisis_year2_bool = False
+    crisis_year1_bool = True
+    crisis_year2_bool = True
     crisis_year1 = 2
     crisis_year2 = 6
     min_value = -15
@@ -261,9 +261,12 @@ def calculate_used_wood_for_furniture(year, value_wood_demand_, price_of_wood, v
 
     if year == 0:
         used_wood_for_furniture = value_wood_demand_[year]
+        print(f"used wood for furniture: {value_wood_demand_[year]} ")
     else:
-        used_wood_for_furniture = (value_wood_demand_[year] / (price_of_wood / value_price_of_wood[iteration]) * price_impact_influence - 1) * ratio_for_wood_furniture_demand * ratio_steel
-        print(f"used_wood_for_furniture: {used_wood_for_furniture} = (value_wood_demand_[year]: {value_wood_demand_[year]} / (price_of_wood: {price_of_wood} / value_price_of_wood[iteration]: {value_price_of_wood[iteration]} * ratio_for_wood_furniture_demand: {ratio_for_wood_furniture_demand} * ratio_steel: {ratio_steel}")
+        price_difference_wood = price_of_wood / value_price_of_wood[iteration]
+        price_difference_wood = (price_difference_wood * price_impact_influence) - 1
+        used_wood_for_furniture = value_wood_demand_[year] / price_difference_wood * ratio_for_wood_furniture_demand * ratio_steel
+        # print(f"used_wood_for_furniture: {used_wood_for_furniture} = (value_wood_demand_[year]: {value_wood_demand_[year]} / (price_of_wood: {price_of_wood} / value_price_of_wood[iteration]: {value_price_of_wood[iteration]} * ratio_for_wood_furniture_demand: {ratio_for_wood_furniture_demand} * ratio_steel: {ratio_steel}")
     return used_wood_for_furniture
 
 
@@ -291,7 +294,8 @@ def calculate_used_non_wood_material(year, value_price_of_steel, price_of_steel,
         price_difference_steel = (price_difference_steel * price_impact_influence) - 1
         used_steel_for_furniture = value_steel_demand_[year] / price_difference_steel * ratio_wood_price / ratio_for_wood_furniture_demand
 
-        print(f"value steel demand (year) {value_steel_demand_[year]} / price difference steel: {price_difference_steel} / ratio wood price: {ratio_wood_price} / ratio wood furniture demand {ratio_for_wood_furniture_demand}")
+        # debug print
+        # print(f"value steel demand (year) {value_steel_demand_[year]} / price difference steel: {price_difference_steel} / ratio wood price: {ratio_wood_price} / ratio wood furniture demand {ratio_for_wood_furniture_demand}")
 
         price_difference_aluminium = price_of_aluminium / value_price_of_aluminium[iteration]
         price_difference_aluminium = (price_difference_aluminium * price_impact_influence) - 1
