@@ -12,7 +12,7 @@ growth_rate_2 = 1.02
 initial_inflation_rate = 1.02
 # Demand growth can be found in the specific function
 
-# Sets the initial amount the megatrend should have for the first iteration in the model
+# Sets the initial amount the megatrends should have for the first iteration in the model
 initial_megatrend = 50
 
 # Initial Supplies
