@@ -341,7 +341,7 @@ def create_price_subplots(data_dic, **plot_params):
     ax[7].set_title("value_price_of_plastics (€)")
     for i in range(8):
         ax[i].grid()
-    plt.savefig("static/overview_prices")
+    plt.savefig("overview_prices")
     plt.close()
     plt.show()
 
@@ -369,7 +369,7 @@ def create_material_supply_subplot(data_dic, **plot_params):
     ax[7].set_title("value_current_supply_of_plastics (tons)")
     for i in range(8):
         ax[i].grid()
-    plt.savefig("static/current_material_supplies")
+    plt.savefig("current_material_supplies")
     plt.close()
     plt.show()
 
@@ -400,7 +400,7 @@ def create_used_materials_and_emissions_subplots(data_dic, **plot_params):
     ax[8].set_title("KG CO2 eq. emitted (per year)")
     for i in range(9):
         ax[i].grid()
-    plt.savefig("static/used_materials_and_emissions")
+    plt.savefig("used_materials_and_emissions")
     plt.close()
     plt.show()
 
@@ -587,7 +587,7 @@ if __name__ == "__main__":
 
     df = pd.DataFrame(data_dict, dtype=float)
 
-    df.to_csv("static/simulation.csv", index=False, sep=";")
+    df.to_csv("simulation.csv", index=False, sep=";")
 
     print("\nSystem message: Simulation Dataframe created and saved!\n")
 
