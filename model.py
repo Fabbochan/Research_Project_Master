@@ -397,7 +397,7 @@ def create_used_materials_and_emissions_subplots(data_dic, **plot_params):
     ax[7].plot(data_dic["value_time"], data_dic["value_used_plastics_for_furniture"], **plot_params)
     ax[7].set_title("value_used_plastics_for_furniture (tons)")
     ax[8].plot(data_dic["value_time"], data_dic["value_gwp"], **plot_params)
-    ax[8].set_title("KG CO2 eq. emitted (per year)")
+    ax[8].set_title("Tons CO2 eq. emitted (per year)")
     for i in range(9):
         ax[i].grid()
     plt.savefig("used_materials_and_emissions")
