@@ -587,7 +587,7 @@ if __name__ == "__main__":
 
     df = pd.DataFrame(data_dict, dtype=float)
 
-    df.to_csv("simulation.csv", index=False, sep=";")
+    df.to_csv("simulation.csv", index=False, sep=",")
 
     print("\nSystem message: Simulation Dataframe created and saved!\n")
 
