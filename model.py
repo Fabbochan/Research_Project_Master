@@ -33,8 +33,8 @@ initial_price_steel = 424.16
 initial_price_aluminium = 2529.51
 # Germany - statistics "Complete Revenue": 1321 € per ton
 # Austria - "WKO branchen-industry report": 1950 € per ton
-initial_price_glass = 1975
-initial_price_plastics = 938.67
+initial_price_glass = 12040
+initial_price_plastics = 1854
 
 # Variable to fluctuate the demand for wood furniture
 # default = False
